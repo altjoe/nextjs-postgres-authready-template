@@ -142,7 +142,7 @@ export default function SignIn(props) {
                 setLoginStatus("Logging in");
                 setIsSignedIn(true);
                 router.push("/");
-                localStorage.setItem("isSignedIn", true);
+                localStorage.setItem("signedIn", true);
             } else {
                 setLoginStatus("Incorrect username or password");
             }

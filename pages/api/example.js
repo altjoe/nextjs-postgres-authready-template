@@ -1,14 +1,30 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-const db = require("../../src/db");
+import knex from "../../src/db";
+import bcrypt from "bcrypt";
 
 export default async (req, res) => {
-    return db.any("SELECT * FROM users")
-        .then((data) => {
-            console.log(data);
-            res.status(200).json(data);
-        })
-        .catch((err) => {
-            res.status(500).json({ message: err.message });
-        });
+    const params = req.query;
+    let { username, password } = params;
+
+    try {
+        const data = await knex("users")
+            .where({ username: username })
+            .select("passwordhash")
+            .first();
+
+        if (!data) {
+            res.status(401).json("fail");
+            return;
+        } else {
+            const match = await bcrypt.compare(password, data.passwordhash);
+            if (!match) {
+                res.status(401).json("fail");
+                return;
+            }
+
+            res.status(200).json("success");
+        }
+    } catch (err) {
+        console.log(err);
+        res.status(500).json("fail");
+    }
 };
