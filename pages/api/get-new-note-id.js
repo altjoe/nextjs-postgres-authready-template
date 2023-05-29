@@ -26,7 +26,7 @@ export default async (req, res) => {
             res.status(200).json(data);
         }
     } catch (err) {
-        console.log(err);
+        console.log(`[API ERROR]: /api/get-new-note-id ${err}`);
         res.status(500).json("fail");
     }
 };
